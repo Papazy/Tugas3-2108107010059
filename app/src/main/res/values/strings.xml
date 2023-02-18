@@ -1,0 +1,10 @@
+<resources>
+    <string name="file_name">strings.xml</string>
+    <string name="app_name">UserForm</string>
+    <string name="nama">Nama</string>
+    <string name="nim">NIM</string>
+    <string name="jurusan">Jurusan</string>
+    <string name="btn">Simpan</string>
+
+
+</resources>
