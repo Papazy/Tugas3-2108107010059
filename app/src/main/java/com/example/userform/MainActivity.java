@@ -3,6 +3,7 @@ package com.example.userform;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.View;
@@ -20,92 +21,49 @@ import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
-
+        EditText nama;
+        EditText nim;
+        EditText jurusan;
+        Button simpanBtn, lihatBtn;
+    DBHelper dbHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        EditText nama;
-        EditText nim;
-        EditText jurusan;
-        Button simpanBtn;
         // mengambil R
         nama = findViewById(R.id.nama);
         nim = findViewById(R.id.nim);
         jurusan = findViewById(R.id.jurusan);
-        simpanBtn = findViewById(R.id.simpanButton);simpanBtn.setOnClickListener(new View.OnClickListener (){
-            public void onClick(View v){
-                String snama = nama.getText().toString();
-                String snim = nim.getText().toString();
-                String sjurusan = jurusan.getText().toString();
+        simpanBtn = findViewById(R.id.simpanButton);
+        lihatBtn = findViewById(R.id.lihatButton);
 
-//                simpanDataKeXML(snama, snim, sjurusan);
+        dbHelper = new DBHelper(MainActivity.this);
+        simpanBtn.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View view){
+                String mhsNama = nama.getText().toString();
+                String mhsNim = nim.getText().toString();
+                String mhsJurusan = jurusan.getText().toString();
 
-                // Membersihkan area edittext
+                if(mhsNama.isEmpty() && mhsNim.isEmpty() && mhsJurusan.isEmpty()){
+                    Toast.makeText(MainActivity.this, "Mohon isi Kolomnya", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                dbHelper.tambahMahasiswa(mhsNama,mhsNim,mhsJurusan);
+
+                Toast.makeText(MainActivity.this, "Data Disimpan", Toast.LENGTH_SHORT).show();
                 nama.setText("");
                 nim.setText("");
                 jurusan.setText("");
-
-                Toast.makeText(MainActivity.this, "Data Berhasil Disimpan", Toast.LENGTH_SHORT).show();
+            }
+        });
+        lihatBtn.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Intent i = new Intent(MainActivity.this, Viewmahasiswa.class);
+                startActivity(i);
             }
         });
     }
-    void simpanDataKeXML(String nama, String nim, String jurusan ) {
-        // Mendapatkan Resources di file terkait
-        Resources rsc = getResources();
 
-        // Mendapatkan resources ID
-        int rscId = rsc.getIdentifier("strings", "xml", getPackageName());
-
-        // Membuka file strings.xml
-        InputStream ins = rsc.openRawResource(rscId);
-
-        // Membaca isi file
-        StringBuilder strbd = new StringBuilder();
-        byte [] buffer = new byte[1024];
-        int bytesRead ;
-        try{
-            while((bytesRead = ins.read(buffer)) != -1){
-                strbd.append(new String(buffer, 0, bytesRead));
-            }
-
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-
-        try{
-            ins.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-
-        // Menambahkan data baru
-        strbd.insert(strbd.indexOf("</resources>"),
-                "    <string name=\"nama_user\">" + nama + "</string>\n"+
-                    "    <string name=\"nim_user\">"+nim+ "</string>\n"+
-                    "    <string name=\"jurusan_user\">"+jurusan+"</string>\n"
-                );
-
-        //Membuka file untuk ditulis
-        OutputStream out = null;
-        try {
-            out = new FileOutputStream(new File(getResources().getString(R.string.file_name)));
-        } catch (FileNotFoundException e){
-            e.printStackTrace();
-        }
-
-        // Menulis
-        try{
-            out.write(strbd.toString().getBytes());
-        } catch (IOException e){
-            e.printStackTrace();
-        }
-
-        try{
-            out.close();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
 }

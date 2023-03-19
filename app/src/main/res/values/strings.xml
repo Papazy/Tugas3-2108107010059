@@ -5,6 +5,6 @@
     <string name="nim">NIM</string>
     <string name="jurusan">Jurusan</string>
     <string name="btn">Simpan</string>
-
+    <string name="btnAmbil">Baca Data</string>
 
 </resources>
